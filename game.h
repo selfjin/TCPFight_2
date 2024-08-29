@@ -39,7 +39,7 @@
 
 #define dfATTACK1_DAMAGE 8
 #define dfATTACK2_DAMAGE 14
-#define dfATTACK1_DAMAGE 18
+#define dfATTACK3_DAMAGE 18
 
 //-------------------------------------------------------------
 // extern 전역 변수
@@ -68,3 +68,5 @@ void Update();
 //               공격 방향, 캐릭터, 공격범위,    위,    아래,        대상x,       대상y
 bool isWithRange(int dir, int x, int x2, int y1, int y2, int enemy_X, int enemy_Y);
 
+
+void attack_1_RangeInPlayer(PACKET_CS_ATTACK1* payloadPacket, int attackerID);

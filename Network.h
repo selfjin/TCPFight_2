@@ -95,6 +95,10 @@ void NET_PACKET_MP_MoveStop(PACKET_SC_MOVE_STOP* MakePacket, PACKET_CS_MOVE_STOP
 
 void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID);
 
+void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID);
+
+void NET_PACKET_MP_Damage(PACKET_SC_DAMAGE* MakePacket, int attackerID, int damageID, int dagameHP);
+
 //-------------------------------------------------------------
 //  NET_PACKET_PROC  // Packet Procedure
 //-------------------------------------------------------------

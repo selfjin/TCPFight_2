@@ -350,7 +350,6 @@ void netIOProcess_RECV()
                 }
                 
 
-
                 /////////////////////////////////////
 
                 switch (header.Type)
@@ -592,6 +591,21 @@ void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID)
     MakePacket->ID = ID;
 }
 
+void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID)
+{
+    MakePacket->dir = payloadPacket->dir;
+    MakePacket->ID = ID;
+    MakePacket->x = payloadPacket->x;
+    MakePacket->y = payloadPacket->y;
+}
+
+void NET_PACKET_MP_Damage(PACKET_SC_DAMAGE* MakePacket, int attackerID, int damageID, int dagameHP)
+{
+    MakePacket->AttackID = attackerID;
+    MakePacket->DamageID = damageID;
+    MakePacket->DamageHP = dagameHP;
+}
+
 //-------------------------------------------------------------
 //  NET_PACKET_PROC  // Packet Procedure
 //-------------------------------------------------------------
@@ -650,7 +664,23 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     }
     case dfPACKET_CS_ATTACK1:
     {
+        PACKET_HEADER header;
+        NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK1);
+        PACKET_SC_ATTACK1 makePacket;
+        NET_PACKET_MP_ATTACK1(&makePacket, (PACKET_CS_ATTACK1*)packet, session->ID);
 
+        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+
+        /////////////////////////////////////////////////////////////////
+                             // 로직, 분리 필요 //
+        
+        // 1. 피격 판정과 브로드캐스트
+        
+        attack_1_RangeInPlayer((PACKET_CS_ATTACK1*)packet, session->ID);
+
+
+        /////////////////////////////////////////////////////////////////
+        
         break;
     }
     case dfPACKET_CS_ATTACK2:
