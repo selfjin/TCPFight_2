@@ -97,6 +97,10 @@ void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID);
 
 void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID);
 
+void NET_PACKET_MP_ATTACK2(PACKET_SC_ATTACK2* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID);
+
+void NET_PACKET_MP_ATTACK3(PACKET_SC_ATTACK3* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID);
+
 void NET_PACKET_MP_Damage(PACKET_SC_DAMAGE* MakePacket, int attackerID, int damageID, int dagameHP);
 
 //-------------------------------------------------------------

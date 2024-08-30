@@ -84,6 +84,104 @@ void attack_1_RangeInPlayer(PACKET_CS_ATTACK1* payloadPacket, int attackerID)
 
 }
 
+void attack_2_RangeInPlayer(PACKET_CS_ATTACK2* payloadPacket, int attackerID)
+{
+    int attack_Range_X;
+    int attack_Range_Y1;
+    int attack_Range_Y2;
+
+    PACKET_CS_ATTACK2 packet;
+    memcpy(&packet, payloadPacket, sizeof(PACKET_CS_ATTACK2));
+
+    if (packet.dir == 0)    // 왼쪽 공격
+    {
+        attack_Range_X = (packet.x - dfATTACK2_RANGE_X);
+    }
+    else
+    {
+        attack_Range_X = (packet.x + dfATTACK2_RANGE_X);
+    }
+
+    attack_Range_Y1 = packet.y - 10;
+    attack_Range_Y2 = packet.y + 10;
+
+    for (auto player : playerList)
+    {
+        if ((*player).Alive != true || (*player).ID == attackerID)
+        {
+            continue;
+        }
+        if (isWithRange(packet.dir, packet.x, attack_Range_X,
+            attack_Range_Y1, attack_Range_Y2,
+            (*player).x, (*player).y))
+        {
+            PACKET_HEADER header;
+            NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DAMAGE);
+            PACKET_SC_DAMAGE damage_Packet;
+            NET_PACKET_MP_Damage(&damage_Packet, attackerID, (*player).ID,
+                (*player).hp - dfATTACK2_DAMAGE);
+            // 로직 처리 ...
+
+            (*player).hp = damage_Packet.DamageHP;
+
+            // 상당히 손 봐야 하는 코드
+
+            NETWORK_BROADCAST((char*)&damage_Packet, nullptr, &header);
+
+            break;
+        }
+    }
+}
+
+void attack_3_RangeInPlayer(PACKET_CS_ATTACK3* payloadPacket, int attackerID)
+{
+    int attack_Range_X;
+    int attack_Range_Y1;
+    int attack_Range_Y2;
+
+    PACKET_CS_ATTACK3 packet;
+    memcpy(&packet, payloadPacket, sizeof(PACKET_CS_ATTACK3));
+
+    if (packet.dir == 0)    // 왼쪽 공격
+    {
+        attack_Range_X = (packet.x - dfATTACK3_RANGE_X);
+    }
+    else
+    {
+        attack_Range_X = (packet.x + dfATTACK3_RANGE_X);
+    }
+
+    attack_Range_Y1 = packet.y - 10;
+    attack_Range_Y2 = packet.y + 10;
+
+    for (auto player : playerList)
+    {
+        if ((*player).Alive != true || (*player).ID == attackerID)
+        {
+            continue;
+        }
+        if (isWithRange(packet.dir, packet.x, attack_Range_X,
+            attack_Range_Y1, attack_Range_Y2,
+            (*player).x, (*player).y))
+        {
+            PACKET_HEADER header;
+            NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DAMAGE);
+            PACKET_SC_DAMAGE damage_Packet;
+            NET_PACKET_MP_Damage(&damage_Packet, attackerID, (*player).ID,
+                (*player).hp - dfATTACK3_DAMAGE);
+            // 로직 처리 ...
+
+            (*player).hp = damage_Packet.DamageHP;
+
+            // 상당히 손 봐야 하는 코드
+
+            NETWORK_BROADCAST((char*)&damage_Packet, nullptr, &header);
+
+            break;
+        }
+    }
+}
+
 
 void Update()
 {

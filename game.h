@@ -70,3 +70,7 @@ bool isWithRange(int dir, int x, int x2, int y1, int y2, int enemy_X, int enemy_
 
 
 void attack_1_RangeInPlayer(PACKET_CS_ATTACK1* payloadPacket, int attackerID);
+
+void attack_2_RangeInPlayer(PACKET_CS_ATTACK2* payloadPacket, int attackerID);
+
+void attack_3_RangeInPlayer(PACKET_CS_ATTACK3* payloadPacket, int attackerID);

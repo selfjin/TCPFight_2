@@ -557,6 +557,13 @@ void NET_PACKET_MP_HEADER(PACKET_HEADER* packet, int defineNum)
         packet->Type = dfPACKET_SC_ATTACK2;
         break;
     }
+    case dfPACKET_SC_ATTACK3:
+    {
+        packet->Code = 0x89;
+        packet->Size = sizeof(PACKET_SC_ATTACK3);
+        packet->Type = dfPACKET_SC_ATTACK3;
+        break;
+    }
     case dfPACKET_SC_DAMAGE:
     {
         packet->Code = 0x89;
@@ -592,6 +599,22 @@ void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID)
 }
 
 void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID)
+{
+    MakePacket->dir = payloadPacket->dir;
+    MakePacket->ID = ID;
+    MakePacket->x = payloadPacket->x;
+    MakePacket->y = payloadPacket->y;
+}
+
+void NET_PACKET_MP_ATTACK2(PACKET_SC_ATTACK2* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID)
+{
+    MakePacket->dir = payloadPacket->dir;
+    MakePacket->ID = ID;
+    MakePacket->x = payloadPacket->x;
+    MakePacket->y = payloadPacket->y;
+}
+
+void NET_PACKET_MP_ATTACK3(PACKET_SC_ATTACK3* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID)
 {
     MakePacket->dir = payloadPacket->dir;
     MakePacket->ID = ID;
@@ -685,12 +708,42 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     }
     case dfPACKET_CS_ATTACK2:
     {
+        PACKET_HEADER header;
+        NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK2);
+        PACKET_SC_ATTACK2 makePacket;
+        NET_PACKET_MP_ATTACK2(&makePacket, (PACKET_CS_ATTACK2*)packet, session->ID);
 
+        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+
+        /////////////////////////////////////////////////////////////////
+                             // 로직, 분리 필요 //
+
+        // 1. 피격 판정과 브로드캐스트
+
+        attack_2_RangeInPlayer((PACKET_CS_ATTACK2*)packet, session->ID);
+
+
+        /////////////////////////////////////////////////////////////////
         break;
     }
     case dfPACKET_CS_ATTACK3:
     {
+        PACKET_HEADER header;
+        NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK3);
+        PACKET_SC_ATTACK3 makePacket;
+        NET_PACKET_MP_ATTACK3(&makePacket, (PACKET_CS_ATTACK3*)packet, session->ID);
 
+        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+
+        /////////////////////////////////////////////////////////////////
+                             // 로직, 분리 필요 //
+
+        // 1. 피격 판정과 브로드캐스트
+
+        attack_3_RangeInPlayer((PACKET_CS_ATTACK3*)packet, session->ID);
+
+
+        /////////////////////////////////////////////////////////////////
         break;
     }
     default:
