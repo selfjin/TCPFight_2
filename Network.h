@@ -1,8 +1,8 @@
 #pragma once
-#include <Windows.h>
 #include <list>
 #include "PacketHeader.h"
 #include "RingBuffer.h"
+#include "SerializationBuffer.h"
 
 //-------------------------------------------------------------
 //  NETWORK
@@ -89,19 +89,19 @@ void netSession();
 
 void NET_PACKET_MP_HEADER(PACKET_HEADER* packet, int defineNum);
 
-void NET_PACKET_MP_MoveStart(PACKET_SC_MOVE_START* MakePacket, PACKET_CS_MOVE_START* payloadPacket, int ID);
+void NET_PACKET_MP_MoveStart(CPacket* MakePacket, PACKET_CS_MOVE_START* payloadPacket, int ID);
 
-void NET_PACKET_MP_MoveStop(PACKET_SC_MOVE_STOP* MakePacket, PACKET_CS_MOVE_STOP* payloadPacket, int ID);
+void NET_PACKET_MP_MoveStop(CPacket* MakePacket, PACKET_CS_MOVE_STOP* payloadPacket, int ID);
 
-void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID);
+void NET_PACKET_MP_Delete(CPacket* MakePacket, int ID);
 
-void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID);
+void NET_PACKET_MP_ATTACK1(CPacket* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID);
 
-void NET_PACKET_MP_ATTACK2(PACKET_SC_ATTACK2* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID);
+void NET_PACKET_MP_ATTACK2(CPacket* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID);
 
-void NET_PACKET_MP_ATTACK3(PACKET_SC_ATTACK3* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID);
+void NET_PACKET_MP_ATTACK3(CPacket* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID);
 
-void NET_PACKET_MP_Damage(PACKET_SC_DAMAGE* MakePacket, int attackerID, int damageID, int dagameHP);
+void NET_PACKET_MP_Damage(CPacket* MakePacket, int attackerID, int damageID, char dagameHP);
 
 //-------------------------------------------------------------
 //  NET_PACKET_PROC  // Packet Procedure

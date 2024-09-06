@@ -26,6 +26,9 @@
     <ClCompile Include="Network.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="SerializationBuffer.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Network.h">
@@ -42,6 +45,9 @@
     </ClInclude>
     <ClInclude Include="PacketHeader.h">
       <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializationBuffer.h">
+      <Filter>Module</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

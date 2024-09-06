@@ -350,7 +350,7 @@ void netIOProcess_RECV()
                 }
                 
 
-                /////////////////////////////////////
+                //////////////////////////////  함수로 뺄 수 있는 부분  //////////////////////////////
 
                 switch (header.Type)
                 {
@@ -577,56 +577,56 @@ void NET_PACKET_MP_HEADER(PACKET_HEADER* packet, int defineNum)
     }
 }
 
-void NET_PACKET_MP_MoveStart(PACKET_SC_MOVE_START* MakePacket, PACKET_CS_MOVE_START* payloadPacket, int ID)
+void NET_PACKET_MP_MoveStart(CPacket* MakePacket, PACKET_CS_MOVE_START* payloadPacket, int ID)
 {
-    MakePacket->dir = payloadPacket->dir;
-    MakePacket->ID = ID;
-    MakePacket->x = payloadPacket->x;
-    MakePacket->y = payloadPacket->y;
+    *MakePacket << ID;
+    *MakePacket << payloadPacket->dir;
+    *MakePacket << payloadPacket->x;
+    *MakePacket << payloadPacket->y;
 }
 
-void NET_PACKET_MP_MoveStop(PACKET_SC_MOVE_STOP* MakePacket, PACKET_CS_MOVE_STOP* payloadPacket, int ID)
+void NET_PACKET_MP_MoveStop(CPacket* MakePacket, PACKET_CS_MOVE_STOP* payloadPacket, int ID)
 {
-    MakePacket->dir = payloadPacket->dir;
-    MakePacket->ID = ID;
-    MakePacket->x = payloadPacket->x;
-    MakePacket->y = payloadPacket->y;
+    *MakePacket << ID;
+    *MakePacket << payloadPacket->dir;
+    *MakePacket << payloadPacket->x;
+    *MakePacket << payloadPacket->y;
 }
 
-void NET_PACKET_MP_Delete(PACKET_SC_DELETE_CHARACTER* MakePacket, int ID)
+void NET_PACKET_MP_Delete(CPacket* MakePacket, int ID)
 {
-    MakePacket->ID = ID;
+    *MakePacket << ID;
 }
 
-void NET_PACKET_MP_ATTACK1(PACKET_SC_ATTACK1* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID)
+void NET_PACKET_MP_ATTACK1(CPacket* MakePacket, PACKET_CS_ATTACK1* payloadPacket, int ID)
 {
-    MakePacket->dir = payloadPacket->dir;
-    MakePacket->ID = ID;
-    MakePacket->x = payloadPacket->x;
-    MakePacket->y = payloadPacket->y;
+    *MakePacket << ID;
+    *MakePacket << payloadPacket->dir;
+    *MakePacket << payloadPacket->x;
+    *MakePacket << payloadPacket->y;
 }
 
-void NET_PACKET_MP_ATTACK2(PACKET_SC_ATTACK2* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID)
+void NET_PACKET_MP_ATTACK2(CPacket* MakePacket, PACKET_CS_ATTACK2* payloadPacket, int ID)
 {
-    MakePacket->dir = payloadPacket->dir;
-    MakePacket->ID = ID;
-    MakePacket->x = payloadPacket->x;
-    MakePacket->y = payloadPacket->y;
+    *MakePacket << ID;
+    *MakePacket << payloadPacket->dir;
+    *MakePacket << payloadPacket->x;
+    *MakePacket << payloadPacket->y;
 }
 
-void NET_PACKET_MP_ATTACK3(PACKET_SC_ATTACK3* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID)
+void NET_PACKET_MP_ATTACK3(CPacket* MakePacket, PACKET_CS_ATTACK3* payloadPacket, int ID)
 {
-    MakePacket->dir = payloadPacket->dir;
-    MakePacket->ID = ID;
-    MakePacket->x = payloadPacket->x;
-    MakePacket->y = payloadPacket->y;
+    *MakePacket << ID;
+    *MakePacket << payloadPacket->dir;
+    *MakePacket << payloadPacket->x;
+    *MakePacket << payloadPacket->y;
 }
 
-void NET_PACKET_MP_Damage(PACKET_SC_DAMAGE* MakePacket, int attackerID, int damageID, int dagameHP)
+void NET_PACKET_MP_Damage(CPacket* MakePacket, int attackerID, int damageID, char dagameHP)
 {
-    MakePacket->AttackID = attackerID;
-    MakePacket->DamageID = damageID;
-    MakePacket->DamageHP = dagameHP;
+    *MakePacket << attackerID;
+    *MakePacket << damageID;
+    *MakePacket << dagameHP;
 }
 
 //-------------------------------------------------------------
@@ -641,23 +641,21 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     {
         PACKET_HEADER header;
         NET_PACKET_MP_HEADER(&header, dfPACKET_SC_MOVE_START);
-        PACKET_SC_MOVE_START makePacket;
+        CPacket makePacket;
         NET_PACKET_MP_MoveStart(&makePacket, (PACKET_CS_MOVE_START*)packet, session->ID);
 
         ////////////////////////////////////////////////////////////////
                              // 로직, 분리 필요 //
-        PACKET_CS_MOVE_START mPacket;
-        memcpy(&mPacket, packet, sizeof(PACKET_CS_MOVE_START));
 
         (*session).move = 1;
         (*session).move_Sub = 1;
-        (*session).dir = mPacket.dir;
-        (*session).x = mPacket.x;
-        (*session).y = mPacket.y;
+        (*session).dir = ((PACKET_CS_MOVE_START*)packet)->dir;
+        (*session).x = ((PACKET_CS_MOVE_START*)packet)->x;
+        (*session).y = ((PACKET_CS_MOVE_START*)packet)->y;
 
         ////////////////////////////////////////////////////////////////
 
-        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+        NETWORK_BROADCAST(makePacket.GetBufferPtr(), session, &header);
 
         break;
     }
@@ -665,23 +663,22 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     {
         PACKET_HEADER header;
         NET_PACKET_MP_HEADER(&header, dfPACKET_SC_MOVE_STOP);
-        PACKET_SC_MOVE_STOP makePacket;
+        CPacket makePacket;
         NET_PACKET_MP_MoveStop(&makePacket, (PACKET_CS_MOVE_STOP*)packet, session->ID);
 
         ////////////////////////////////////////////////////////////////
                              // 로직, 분리 필요 //
-        PACKET_CS_MOVE_STOP mPacket;
-        memcpy(&mPacket, packet, sizeof(PACKET_CS_MOVE_STOP));
 
         (*session).move = 0;
 
-        (*session).dir = mPacket.dir;
-        (*session).x = mPacket.x;
-        (*session).y = mPacket.y;
+        (*session).dir = ((PACKET_CS_MOVE_STOP*)packet)->dir;
+        (*session).x = ((PACKET_CS_MOVE_STOP*)packet)->x;
+        (*session).y = ((PACKET_CS_MOVE_STOP*)packet)->y;
+
 
         ////////////////////////////////////////////////////////////////
 
-        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+        NETWORK_BROADCAST(makePacket.GetBufferPtr(), session, &header);
         
         break;
     }
@@ -689,15 +686,15 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     {
         PACKET_HEADER header;
         NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK1);
-        PACKET_SC_ATTACK1 makePacket;
+        CPacket makePacket;
         NET_PACKET_MP_ATTACK1(&makePacket, (PACKET_CS_ATTACK1*)packet, session->ID);
 
-        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+        NETWORK_BROADCAST(makePacket.GetBufferPtr(), session, &header);
 
         /////////////////////////////////////////////////////////////////
                              // 로직, 분리 필요 //
         
-        // 1. 피격 판정과 브로드캐스트
+        // 1. 피격 판정과 브로드캐스
         
         attack_1_RangeInPlayer((PACKET_CS_ATTACK1*)packet, session->ID);
 
@@ -710,10 +707,10 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     {
         PACKET_HEADER header;
         NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK2);
-        PACKET_SC_ATTACK2 makePacket;
+        CPacket makePacket;
         NET_PACKET_MP_ATTACK2(&makePacket, (PACKET_CS_ATTACK2*)packet, session->ID);
 
-        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+        NETWORK_BROADCAST(makePacket.GetBufferPtr(), session, &header);
 
         /////////////////////////////////////////////////////////////////
                              // 로직, 분리 필요 //
@@ -730,10 +727,10 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     {
         PACKET_HEADER header;
         NET_PACKET_MP_HEADER(&header, dfPACKET_SC_ATTACK3);
-        PACKET_SC_ATTACK3 makePacket;
+        CPacket makePacket;
         NET_PACKET_MP_ATTACK3(&makePacket, (PACKET_CS_ATTACK3*)packet, session->ID);
 
-        NETWORK_BROADCAST((char*)&makePacket, session, &header);
+        NETWORK_BROADCAST(makePacket.GetBufferPtr(), session, &header);
 
         /////////////////////////////////////////////////////////////////
                              // 로직, 분리 필요 //
@@ -752,3 +749,4 @@ void NET_PACKET_PROC(Session* session, char* packet, int packetType)
     }
 }
 
+void power();

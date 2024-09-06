@@ -73,7 +73,6 @@ struct PACKET_SC_MOVE_STOP					// 13
 };
 
 
-
 struct PACKET_CS_ATTACK1					// 20
 {
 	char dir;
@@ -135,3 +134,7 @@ struct PACKET_SC_DAMAGE						// 30
 
 
 #pragma pack(pop)
+
+
+
+

@@ -40,20 +40,17 @@ void attack_1_RangeInPlayer(PACKET_CS_ATTACK1* payloadPacket, int attackerID)
     int attack_Range_Y1;
     int attack_Range_Y2;
 
-    PACKET_CS_ATTACK1 packet;
-    memcpy(&packet, payloadPacket, sizeof(PACKET_CS_ATTACK1));
-
-    if (packet.dir == 0)    // 왼쪽 공격
+    if (payloadPacket->dir == 0)    // 왼쪽 공격
     {
-        attack_Range_X = (packet.x - dfATTACK1_RANGE_X);
+        attack_Range_X = (payloadPacket->x - dfATTACK1_RANGE_X);
     }
     else
     {
-        attack_Range_X = (packet.x + dfATTACK1_RANGE_X);
+        attack_Range_X = (payloadPacket->x + dfATTACK1_RANGE_X);
     }
 
-    attack_Range_Y1 = packet.y - 10;
-    attack_Range_Y2 = packet.y + 10;
+    attack_Range_Y1 = payloadPacket->y - 10;
+    attack_Range_Y2 = payloadPacket->y + 10;
 
     for (auto player : playerList)
     {
@@ -61,22 +58,22 @@ void attack_1_RangeInPlayer(PACKET_CS_ATTACK1* payloadPacket, int attackerID)
         {
             continue;
         }
-        if (isWithRange(packet.dir, packet.x, attack_Range_X,
+        if (isWithRange(payloadPacket->dir, payloadPacket->x, attack_Range_X,
             attack_Range_Y1, attack_Range_Y2,
             (*player).x, (*player).y))
         {
             PACKET_HEADER header;
             NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DAMAGE);
-            PACKET_SC_DAMAGE damage_Packet;
+            CPacket damage_Packet;
             NET_PACKET_MP_Damage(&damage_Packet, attackerID, (*player).ID,
                 (*player).hp - dfATTACK1_DAMAGE);
             // 로직 처리 ...
 
-            (*player).hp = damage_Packet.DamageHP;
+            (*player).hp = (*player).hp - dfATTACK1_DAMAGE;
 
             // 상당히 손 봐야 하는 코드
 
-            NETWORK_BROADCAST((char*)&damage_Packet, nullptr, &header);
+            NETWORK_BROADCAST(damage_Packet.GetBufferPtr(), nullptr, &header);
             
             break;
         }
@@ -90,20 +87,18 @@ void attack_2_RangeInPlayer(PACKET_CS_ATTACK2* payloadPacket, int attackerID)
     int attack_Range_Y1;
     int attack_Range_Y2;
 
-    PACKET_CS_ATTACK2 packet;
-    memcpy(&packet, payloadPacket, sizeof(PACKET_CS_ATTACK2));
 
-    if (packet.dir == 0)    // 왼쪽 공격
+    if (payloadPacket->dir == 0)    // 왼쪽 공격
     {
-        attack_Range_X = (packet.x - dfATTACK2_RANGE_X);
+        attack_Range_X = (payloadPacket->x - dfATTACK2_RANGE_X);
     }
     else
     {
-        attack_Range_X = (packet.x + dfATTACK2_RANGE_X);
+        attack_Range_X = (payloadPacket->x + dfATTACK2_RANGE_X);
     }
 
-    attack_Range_Y1 = packet.y - 10;
-    attack_Range_Y2 = packet.y + 10;
+    attack_Range_Y1 = payloadPacket->y - 10;
+    attack_Range_Y2 = payloadPacket->y + 10;
 
     for (auto player : playerList)
     {
@@ -111,22 +106,22 @@ void attack_2_RangeInPlayer(PACKET_CS_ATTACK2* payloadPacket, int attackerID)
         {
             continue;
         }
-        if (isWithRange(packet.dir, packet.x, attack_Range_X,
+        if (isWithRange(payloadPacket->dir, payloadPacket->x, attack_Range_X,
             attack_Range_Y1, attack_Range_Y2,
             (*player).x, (*player).y))
         {
             PACKET_HEADER header;
             NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DAMAGE);
-            PACKET_SC_DAMAGE damage_Packet;
+            CPacket damage_Packet;
             NET_PACKET_MP_Damage(&damage_Packet, attackerID, (*player).ID,
                 (*player).hp - dfATTACK2_DAMAGE);
             // 로직 처리 ...
 
-            (*player).hp = damage_Packet.DamageHP;
+            (*player).hp = (*player).hp - dfATTACK2_DAMAGE;
 
             // 상당히 손 봐야 하는 코드
 
-            NETWORK_BROADCAST((char*)&damage_Packet, nullptr, &header);
+            NETWORK_BROADCAST(damage_Packet.GetBufferPtr(), nullptr, &header);
 
             break;
         }
@@ -139,20 +134,18 @@ void attack_3_RangeInPlayer(PACKET_CS_ATTACK3* payloadPacket, int attackerID)
     int attack_Range_Y1;
     int attack_Range_Y2;
 
-    PACKET_CS_ATTACK3 packet;
-    memcpy(&packet, payloadPacket, sizeof(PACKET_CS_ATTACK3));
 
-    if (packet.dir == 0)    // 왼쪽 공격
+    if (payloadPacket->dir == 0)    // 왼쪽 공격
     {
-        attack_Range_X = (packet.x - dfATTACK3_RANGE_X);
+        attack_Range_X = (payloadPacket->x - dfATTACK3_RANGE_X);
     }
     else
     {
-        attack_Range_X = (packet.x + dfATTACK3_RANGE_X);
+        attack_Range_X = (payloadPacket->x + dfATTACK3_RANGE_X);
     }
 
-    attack_Range_Y1 = packet.y - 10;
-    attack_Range_Y2 = packet.y + 10;
+    attack_Range_Y1 = payloadPacket->y - 10;
+    attack_Range_Y2 = payloadPacket->y + 10;
 
     for (auto player : playerList)
     {
@@ -160,22 +153,22 @@ void attack_3_RangeInPlayer(PACKET_CS_ATTACK3* payloadPacket, int attackerID)
         {
             continue;
         }
-        if (isWithRange(packet.dir, packet.x, attack_Range_X,
+        if (isWithRange(payloadPacket->dir, payloadPacket->x, attack_Range_X,
             attack_Range_Y1, attack_Range_Y2,
             (*player).x, (*player).y))
         {
             PACKET_HEADER header;
             NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DAMAGE);
-            PACKET_SC_DAMAGE damage_Packet;
+            CPacket damage_Packet;
             NET_PACKET_MP_Damage(&damage_Packet, attackerID, (*player).ID,
                 (*player).hp - dfATTACK3_DAMAGE);
             // 로직 처리 ...
 
-            (*player).hp = damage_Packet.DamageHP;
+            (*player).hp = (*player).hp - dfATTACK3_DAMAGE;
 
             // 상당히 손 봐야 하는 코드
 
-            NETWORK_BROADCAST((char*)&damage_Packet, nullptr, &header);
+            NETWORK_BROADCAST(damage_Packet.GetBufferPtr(), nullptr, &header);
 
             break;
         }
@@ -247,11 +240,11 @@ void netSession()
         {
             PACKET_HEADER header;
             NET_PACKET_MP_HEADER(&header, dfPACKET_SC_DELETE_CHARACTER);
-            PACKET_SC_DELETE_CHARACTER delete_Packet;
+            CPacket delete_Packet;
             NET_PACKET_MP_Delete(&delete_Packet, (*it).ID);
 
             
-            NETWORK_BROADCAST((char*)&delete_Packet, it, &header);
+            NETWORK_BROADCAST(delete_Packet.GetBufferPtr(), it, &header);
         }
     }
 

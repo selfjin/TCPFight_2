@@ -114,3 +114,10 @@ void RingBuffer::moveBegin(int value)
 }
 
 
+
+
+/*
+* 
+* wchar* 메시지 방식으로
+* 
+*/
