@@ -350,7 +350,7 @@ void netIOProcess_RECV()
                 }
                 
 
-                //////////////////////////////  함수로 뺄 수 있는 부분  //////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////////////////
 
                 switch (header.Type)
                 {
@@ -403,7 +403,7 @@ void netIOProcess_RECV()
                 /////////////////////////////////////
 
 
-                if ((*recvPlayerIter).recvBuffer->getSize() < sizeof(header))
+                if ((*recvPlayerIter).recvBuffer->getSize() < sizeof(header) + header.Size)
                 {
                     break;
                 }
